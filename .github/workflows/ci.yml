@@ -5,7 +5,7 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-    
+
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -19,6 +19,7 @@ jobs:
 
       - name: Get Maven Project Version
         run: |
+          cd /myapp
           mvn clean --quiet
           current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           new_version=$(echo $current_version | awk -F. '{print $1 "." $2 "." $3+1}')
