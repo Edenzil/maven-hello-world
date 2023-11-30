@@ -18,7 +18,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Get Maven Project Version
-        working-directory: /myapp
+        working-directory: myapp/
         run: |
           mvn clean --quiet
           current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
