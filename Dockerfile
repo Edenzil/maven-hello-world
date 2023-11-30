@@ -24,11 +24,10 @@ RUN adduser --system --group nonrootuser
 # Change ownership of the application directory to the non-root user
 RUN chown -R nonrootuser:nonrootuser /myapp
 
-# Switch to the non-root user
-USER nonrootuser
-
 # Expose the port your application runs on
 EXPOSE 8080
+# Switch to the non-root user
+USER nonrootuser
 
 # Command to run the application
 CMD ["java", "-jar", "*.jar" ]
