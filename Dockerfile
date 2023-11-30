@@ -6,12 +6,6 @@ WORKDIR /myapp
 COPY /myapp/pom.xml .
 COPY /myapp/src/ ./src
 
-# RUN mvn clean --quiet
-
-# ENV current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-# ENV new_version=$(echo $current_version | awk -F. '{print $1 "." $2 "." $3+1}')
-# RUN mvn versions:set -DnewVersion=$new_version
-
 RUN mvn package 
 # Stage 2: Create a lightweight image to run the application
 FROM adoptopenjdk:11-jre-hotspot
