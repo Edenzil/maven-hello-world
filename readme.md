@@ -1,4 +1,21 @@
+
 # A simple, minimal Maven example: hello world
+
+I changed the message to "Hello World! And Eden!" and Set the Jar version to 1.0.0
+
+added a corresponding Dockerfile that builds the application and runs the application with a non-root user. (using Multistage Docker )
+
+added 2 workflows:
+
+1. .github/workflows/maven.yaml - only packages the app with maven
+2. .github/workflows/ci.yaml - 
+  a. Increases the Patch part of the jar version automatically
+  b. builds and pushes the image(with new tag) to my dockerhub (https://hub.docker.com/r/edenzil/myapp)
+  c. runs the application with the non-root user
+
+finally i added a helm-chart that deploys my application on kubernetes.
+
+----------------------------------------------------------------------------------------------------------------------------------
 
 To create the files in this git repo we've already run `mvn archetype:generate` from http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
     
@@ -21,20 +38,8 @@ Running `mvn clean` will get us back to only the source Java and the `pom.xml`:
     murphy:myapp pdurbin$ mvn clean --quiet
     murphy:myapp pdurbin$ ack -a -f
     pom.xml
-    src/main/java/com/myapp/app/App.java
-    src/test/java/com/myapp/app/AppTest.java
-
-Running `mvn compile` produces a class file:
-
-    murphy:myapp pdurbin$ mvn compile --quiet
-    murphy:myapp pdurbin$ ack -a -f
-    pom.xml
-    src/main/java/com/myapp/app/App.java
-    src/test/java/com/myapp/app/AppTest.java
-    target/classes/com/myapp/app/App.class
-    murphy:myapp pdurbin$ 
-    murphy:myapp pdurbin$ java -cp target/classes com.myapp.app.App
-    Hello World!
+    src/main/java/com/myapp/App.java
+    src/test/java/com/myapp/AppTest.java
 
 Running `mvn package` does a compile and creates the target directory, including a jar:
 
@@ -42,106 +47,14 @@ Running `mvn package` does a compile and creates the target directory, including
     murphy:myapp pdurbin$ mvn package > /dev/null
     murphy:myapp pdurbin$ ack -a -f
     pom.xml
-    src/main/java/com/myapp/app/App.java
-    src/test/java/com/myapp/app/AppTest.java
-    target/classes/com/myapp/app/App.class
+    src/main/java/com/myapp/App.java
+    src/test/java/com/myapp/AppTest.java
+    target/classes/com/myapp/App.class
     target/maven-archiver/pom.properties
     target/myapp-1.0-SNAPSHOT.jar
     target/surefire-reports/com.myapp.app.AppTest.txt
     target/surefire-reports/TEST-com.myapp.app.AppTest.xml
-    target/test-classes/com/myapp/app/AppTest.class
+    target/test-classes/com/myapp/AppTest.class
     murphy:myapp pdurbin$ 
     murphy:myapp pdurbin$ java -cp target/myapp-1.0-SNAPSHOT.jar com.myapp.app.App
     Hello World!
-
-Running `mvn clean compile exec:java` requires http://mojo.codehaus.org/exec-maven-plugin/
-
-Running `java -jar target/myapp-1.0-SNAPSHOT.jar` requires http://maven.apache.org/plugins/maven-shade-plugin/
-
-# Runnable Jar:
-JAR Plugin
-The Maven’s jar plugin will create jar file and we need to define the main class that will get executed when we run the jar file.
-```
-<plugin>
-  <artifactId>maven-jar-plugin</artifactId>
-  <version>3.0.2</version>
-  <configuration>
-    <archive>
-      <manifest>
-        <addClasspath>true</addClasspath>
-        <mainClass>com.myapp.App</mainClass>
-      </manifest>
-    </archive>
-  </configuration>
-</plugin>
-```
-
-
-# Folder tree before package:
-```
-├── pom.xml
-└── src
-    ├── main
-    │   └── java
-    │       └── com
-    │           └── myapp
-    │               └── app
-    │                   └── App.java
-    └── test
-        └── java
-            └── com
-                └── myapp
-                    └── app
-                        └── AppTest.java
-
-```
-# Folder tree after package:
-```
-
-.
-├── pom.xml
-├── src
-│   ├── main
-│   │   └── java
-│   │       └── com
-│   │           └── myapp
-│   │               └── app
-│   │                   └── App.java
-│   └── test
-│       └── java
-│           └── com
-│               └── myapp
-│                   └── app
-│                       └── AppTest.java
-└── target
-    ├── classes
-    │   └── com
-    │       └── myapp
-    │           └── app
-    │               └── App.class
-    ├── generated-sources
-    │   └── annotations
-    ├── generated-test-sources
-    │   └── test-annotations
-    ├── maven-archiver
-    │   └── pom.properties
-    ├── maven-status
-    │   └── maven-compiler-plugin
-    │       ├── compile
-    │       │   └── default-compile
-    │       │       ├── createdFiles.lst
-    │       │       └── inputFiles.lst
-    │       └── testCompile
-    │           └── default-testCompile
-    │               ├── createdFiles.lst
-    │               └── inputFiles.lst
-    ├── myapp-1.0-SNAPSHOT.jar
-    ├── surefire-reports
-    │   ├── com.myapp.app.AppTest.txt
-    │   └── TEST-com.myapp.app.AppTest.xml
-    └── test-classes
-        └── com
-            └── myapp
-                └── app
-                    └── AppTest.class
-```
