@@ -30,6 +30,7 @@ jobs:
           mvn clean --quiet
           current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           new_version=$(echo $current_version | awk -F. '{print $1 "." $2 "." $3+1}')
+          echo $new_version
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
 
@@ -44,7 +45,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/myapp:$NEW_VERSION
+          tags: ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.NEW_VERSION}}
 
       # - name: Build and Push Docker Image
       #   run: |
