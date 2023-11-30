@@ -44,7 +44,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER.USERNAME }}/myapp:$new_version
+          tags: ${{ secrets.DOCKER_USERNAME }}/myapp:$new_version
 
       # - name: Build and Push Docker Image
       #   run: |
