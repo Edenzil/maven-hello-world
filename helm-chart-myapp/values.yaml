@@ -1,0 +1,4 @@
+replicaCount: 1
+image:
+  repository: docker.io/edenzil/myapp
+  tag: 1.0.1
