@@ -14,20 +14,19 @@ FROM adoptopenjdk:11-jre-hotspot
 WORKDIR /myapp
 
 # Copy the JAR file from the builder stage
-COPY --from=builder /myapp/target/*.jar /myapp/
+COPY --from=builder /myapp/target/*.jar /myapp/myapp
 
-RUN cat *.jar
+RUN cat myapp.jar
 
 # Create a non-root user
 RUN adduser --system --group nonrootuser
 
 # Change ownership of the application directory to the non-root user
-RUN chown -R nonrootuser:nonrootuser /myapp
-
+RUN chown -R nonrootuser:nonrootuser /myapp/*
 # Expose the port your application runs on
 EXPOSE 8080
 # Switch to the non-root user
 USER nonrootuser
 
 # Command to run the application
-CMD ["java", "-jar", "*.jar" ]
+CMD ["java", "-jar", "myapp.jar" ]
