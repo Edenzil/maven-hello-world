@@ -12,7 +12,7 @@ FROM adoptopenjdk:11-jre-hotspot
 WORKDIR /myapp
 
 # Copy the JAR file from the builder stage
-COPY --from=builder /myapp/target/*.jar myapp.jar
+COPY --from=builder /myapp/target/*.jar /myapp/
 
 # Create a non-root user
 RUN adduser --system --group nonrootuser
@@ -27,4 +27,4 @@ USER nonrootuser
 EXPOSE 8080
 
 # Command to run the application
-CMD ["java", "-cp", "myapp.jar", "com.myapp.App"]
+CMD ["java", "-cp", "*.jar", "com.myapp.App"]
