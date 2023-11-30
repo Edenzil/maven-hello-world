@@ -31,4 +31,4 @@ USER nonrootuser
 EXPOSE 8080
 
 # Command to run the application
-CMD ["java", "-cp", "*.jar", "com.myapp.App"]
+CMD ["java", "-jar", "*.jar" ]
