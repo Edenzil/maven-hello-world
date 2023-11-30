@@ -3,7 +3,7 @@ FROM maven:3.8.1-openjdk-11 AS builder
 
 WORKDIR /myapp
 
-COPY myapp/* .
+COPY myapp/ .
 
 RUN ls -l -R
 
