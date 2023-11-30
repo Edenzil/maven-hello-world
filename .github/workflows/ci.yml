@@ -66,4 +66,4 @@ jobs:
         uses: docker/setup-action@v2
 
       - name: Run Docker Image
-        run: docker run -d -p 8080:8080 $DOCKER_USERNAME/myapp:$new_version
+        run: docker run -d -p 8080:8080 edenzil/myapp:$new_version
