@@ -44,7 +44,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: edenzil/myapp:$new_version
+          tags: ${{ secrets.DOCKER_USERNAME }}/myapp:$NEW_VERSION
 
       # - name: Build and Push Docker Image
       #   run: |
