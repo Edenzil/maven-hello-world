@@ -22,6 +22,7 @@ jobs:
           cache: maven
 
       - name: Get Maven Project Version
+        id: project_version
         working-directory: myapp/
         run: |
           mvn clean --quiet
@@ -29,7 +30,7 @@ jobs:
           new_version=$(echo $current_version | awk -F. '{print $1 "." $2 "." $3+1}')
           echo $new_version
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
-          echo "::set-output name=version::$new_version"
+          echo "NEW_VERSION=$new_version" >> $GITHUB_OUTPUT
 
 
       - name: Login to Docker Hub
@@ -52,4 +53,4 @@ jobs:
 
     steps:
       - name: Run Docker Image
-        run: docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/myapp:${{ needs.build-and-push-image.outputs.version }}"
+        run: docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/myapp:${{ steps.project_version.outputs.NEW_VERSION }}"
