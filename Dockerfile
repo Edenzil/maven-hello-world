@@ -14,7 +14,7 @@ FROM adoptopenjdk:11-jre-hotspot
 WORKDIR /myapp
 
 # Copy the JAR file from the builder stage
-COPY --from=builder /myapp/target/*.jar /myapp/myapp
+COPY --from=builder /myapp/target/*.jar /myapp/myapp.jar
 
 RUN cat myapp.jar
 
