@@ -32,16 +32,30 @@ jobs:
           new_version=$(echo $current_version | awk -F. '{print $1 "." $2 "." $3+1}')
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
-      - name: Build and Push Docker Image
-        run: |
-          # Enable BuildKit for the Docker build
-          export DOCKER_BUILDKIT=1
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER.USERNAME }}
+          password: ${{ secrets.DOCKER.PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER.USERNAME }}/myapp:$new_version
+
+      # - name: Build and Push Docker Image
+      #   run: |
+      #     # Enable BuildKit for the Docker build
+      #     export DOCKER_BUILDKIT=1
           
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker build --platform linux/amd64,linux/arm64 -t $DOCKER_USERNAME/myapp:$new_version .
+      #     echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      #     docker build --platform linux/amd64,linux/arm64 -t $DOCKER_USERNAME/myapp:$new_version .
           
-          # Push the image with the new version
-          docker push $DOCKER_USERNAME/myapp:$new_version
+      #     # Push the image with the new version
+      #     docker push $DOCKER_USERNAME/myapp:$new_version
 
   run-pushed-image:
     runs-on: ubuntu-latest
