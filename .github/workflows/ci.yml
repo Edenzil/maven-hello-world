@@ -14,8 +14,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
 
       - name: Get Maven Project Version
         working-directory: myapp/
@@ -23,15 +30,17 @@ jobs:
           mvn clean --quiet
           current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           new_version=$(echo $current_version | awk -F. '{print $1 "." $2 "." $3+1}')
-          echo "New Version: $new_version" >> $GITHUB_ENV
+          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
       - name: Build and Push Docker Image
         run: |
-          docker buildx create --use
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_USERNAME/myapp:$new_version .
+          # Enable BuildKit for the Docker build
+          export DOCKER_BUILDKIT=1
 
-          # Push the inage with the new version
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker build --platform linux/amd64,linux/arm64 -t $DOCKER_USERNAME/myapp:$new_version .
+
+          # Push the image with the new version
           docker push $DOCKER_USERNAME/myapp:$new_version
 
   run-pushed-image:
