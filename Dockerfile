@@ -5,6 +5,8 @@ WORKDIR /myapp
 
 COPY myapp/* .
 
+RUN ls -l -R
+
 RUN mvn package 
 # Stage 2: Create a lightweight image to run the application
 FROM adoptopenjdk:11-jre-hotspot
@@ -13,6 +15,8 @@ WORKDIR /myapp
 
 # Copy the JAR file from the builder stage
 COPY --from=builder /myapp/target/*.jar /myapp/
+
+RUN cat *.jar
 
 # Create a non-root user
 RUN adduser --system --group nonrootuser
