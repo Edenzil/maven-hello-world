@@ -3,7 +3,7 @@
 
 I changed the message to "Hello World! And Eden!" and Set the Jar version to 1.0.0
 
-added a corresponding Dockerfile that builds the application and runs the application with a non-root user. (using Multistage Docker )
+added a corresponding Dockerfile that builds the application and runs the application with a non-root user. (using Multistage build )
 
 added 2 workflows:
 
