@@ -1,28 +1,48 @@
-# Stage 1: Build the application
-FROM maven:3.8.1-openjdk-11 AS builder
+# # Stage 1: Build the application
+# FROM maven:3.8.1-openjdk-11 AS builder
 
-WORKDIR /myapp
+# WORKDIR /myapp
 
-COPY myapp/ .
+# COPY myapp/ .
 
-RUN mvn package 
-# Stage 2: Create a lightweight image to run the application
-FROM adoptopenjdk:11-jre-hotspot
+# RUN mvn package 
+# # Stage 2: Create a lightweight image to run the application
+# FROM adoptopenjdk:11-jre-hotspot
 
-WORKDIR /myapp
+# WORKDIR /myapp
 
-# Copy the JAR file from the builder stage
-COPY --from=builder /myapp/target/*.jar /myapp/myapp.jar
+# # Copy the JAR file from the builder stage
+# COPY --from=builder /myapp/target/*.jar /myapp/myapp.jar
 
-# Create a non-root user
-RUN adduser --system --group nonrootuser
+# # Create a non-root user && Change ownership of the application directory to the non-root user
+# RUN adduser --system --group nonrootuser && chown -R nonrootuser:nonrootuser /myapp/*
 
-# Change ownership of the application directory to the non-root user
-RUN chown -R nonrootuser:nonrootuser /myapp/*
-# Expose the port your application runs on
-EXPOSE 8080
-# Switch to the non-root user
+# # Expose the port your application runs on
+# EXPOSE 8080
+# # Switch to the non-root user
+# USER nonrootuser
+
+# # Command to run the application
+# CMD ["java", "-jar", "myapp.jar" ]
+
+#
+# Build stage
+#
+FROM eclipse-temurin:17-jdk-jammy AS build
+ENV HOME=/usr/app
+RUN mkdir -p $HOME
+WORKDIR $HOME
+ADD . $HOME
+RUN --mount=type=cache,target=/root/.m2 ./mvnw -f $HOME/pom.xml clean package
+
+#
+# Package stage
+#
+FROM eclipse-temurin:17-jre-jammy 
+ARG JAR_FILE=/usr/app/target/*.jar
+COPY --from=build $JAR_FILE /app/myapp.jar
+# # Create a non-root user && Change ownership of the application directory to the non-root user
+RUN adduser --system --group nonrootuser && chown -R nonrootuser:nonrootuser /myapp/*
 USER nonrootuser
-
-# Command to run the application
-CMD ["java", "-jar", "myapp.jar" ]
+EXPOSE 8080
+ENTRYPOINT java -jar /app/runner.jar
