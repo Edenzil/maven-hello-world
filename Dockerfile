@@ -46,4 +46,4 @@ COPY --from=build $JAR_FILE /app/myapp.jar
 RUN adduser --system --group nonrootuser && chown -R nonrootuser:nonrootuser /app/*
 USER nonrootuser
 EXPOSE 8080
-ENTRYPOINT java -jar /app/runner.jar
+ENTRYPOINT java -jar /app/myapp.jar
