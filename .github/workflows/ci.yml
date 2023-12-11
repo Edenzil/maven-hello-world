@@ -31,7 +31,6 @@ jobs:
           current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           new_version=$(echo $current_version | awk -F. '{print $1 "." $2 "." $3+1}')
           mvn versions:set -DnewVersion=$new_version
-          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
           echo "NEW_VERSION=$new_version" >> $GITHUB_OUTPUT
 
 
@@ -46,7 +45,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.NEW_VERSION}}
+          tags: ${{ secrets.DOCKER_USERNAME }}/myapp:${{ outputs.NEW_VERSION}}
 
 
   run-pushed-image:
