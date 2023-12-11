@@ -42,10 +42,12 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v5
+        env:
+          NEW_VERSION: ${{ steps.project_version.outputs.NEW_VERSION }}
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/myapp:${{ NEW_VERSION}}
+          tags: ${{ secrets.DOCKER_USERNAME }}/myapp:$NEW_VERSION
 
 
   run-pushed-image:
