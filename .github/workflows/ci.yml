@@ -47,7 +47,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/myapp:${{ NEW_VERSION }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.NEW_VERSION }}
 
 
   run-pushed-image:
