@@ -43,7 +43,7 @@ FROM eclipse-temurin:17-jre-jammy
 ARG JAR_FILE=/usr/app/target/*.jar
 COPY --from=build $JAR_FILE /app/myapp.jar
 # # Create a non-root user && Change ownership of the application directory to the non-root user
-RUN adduser --system --group nonrootuser && chown -R nonrootuser:nonrootuser /myapp/*
+RUN adduser --system --group nonrootuser && chown -R nonrootuser:nonrootuser /app/*
 USER nonrootuser
 EXPOSE 8080
 ENTRYPOINT java -jar /app/runner.jar
